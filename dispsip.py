@@ -9,7 +9,7 @@ from time import sleep
 import sys
 import random
 
-sys.path.append('./pjsua/')
+#sys.path.append('./pjsua/')
 import pjsua as pj
 from pjsua import *
 

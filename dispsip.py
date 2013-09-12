@@ -18,59 +18,68 @@ logger = logging.getLogger('dispsip')
 ## Defining DispSIP Class
 class dispsip:
 	def __init__(self,user_code='user1', log_level=6):
+		logger.info('Initializing SIP device for user: %s',user_code)
 		self._user=user_code
 		if not pj.Lib.instance():
 			lib = pj.Lib()
 			my_ua_cfg = pj.UAConfig()
-                	my_ua_cfg.user_agent = config.get('SIP_CFG','user_agent')
-                	my_ua_cfg.max_calls = 5
-
                 	my_media_cfg = pj.MediaConfig()
-                	my_media_cfg.enable_ice = True
-                	#my_media_cfg.channel_count = 0
 
                 	try:
+				logger.debug('Initializing PJSUA library')
                         	lib.init(log_cfg=pj.LogConfig(level=log_level, callback=log_cb), ua_cfg=my_ua_cfg, media_cfg=my_media_cfg)
+				logger.debug('Setting null sound device in PJSUA library')
                         	lib.set_null_snd_dev()
 	
                 	except pj.Error, e:
-                        	print 'Lib Initialization error:', e
+                        	logger.error('Lib Initialization error: %s', e)
 
 			try:
-            			lib.start()
+            			logger.debug('Starting PJSUA library.')
+				lib.start()
 			except pj.Error, e:
-                        	print 'Error starting pjsua library:', e
+                        	logger.error('Error starting pjsua library:i %s', e)
+
 	def disconnect(self):
-           	pj.Lib.instance().destroy()
+		try:
+			logger.info('Disconnecting')
+           		pj.Lib.instance().destroy()
+		except pj.Error, e:
+			logger.error('Error disconnecting SIP device: %s',e)
 
 	
 	def connect(self):
+
+		logger.info('Connecting SIP device.')
 		lib = pj.Lib.instance()
-		
+			
 		self._login()
 		self._authenticate()
 
 		## Transport / Listener
                 try:
-                        lib.create_transport(pj.TransportType.TLS, pj.TransportConfig(random.randint(1024, 64 * 1024),'0.0.0.0'))
+			logger.debug('Creating transport...')
+                        tr = lib.create_transport(pj.TransportType.TLS, pj.TransportConfig(random.randint(1024, 64 * 1024),'0.0.0.0'))
+			logger.debug('Transport created. Type:%s, description:%s, is_reliable:%s, is_secure:%s, is_datagram:%s, host:%s, port:%s, ref_cnt:%s',tr.info().type,tr.info().description, tr.info().is_reliable,tr.info().is_secure, tr.info().is_datagram, tr.info().host, tr.info().port, tr.info().ref_cnt)
                 except pj.Error, e:
-                        print 'Error creating transport:', e
+                        logger.error('Error creating transport:', e)
 
 		## SIP Account
+		logger.debug('Creating sip account')
                 acc_cfg = pj.AccountConfig()
                 acc_cfg.id = '"{0}" <sip:{1}@{2}>'.format(self._sip_name, self._sip_username, self._sip_domain)
                 acc_cfg.reg_uri = "sip:"+self._sip_domain
-                #acc_cfg.user_agent = 'GConnect/1.0 (P; Apple; iPhone; iPhone OS; 5.1;)(7e8049ad-f919-3290-858f-7f6b7ee8ae2c)'
                 acc_cfg.proxy.append(self._sip_proxy)
                 acc_cfg.auth_cred = [ AuthCred("*", self._msisdn, self._sip_pass) ]
 
 		try:
                         acc_cb = MyAccountCallback()
+			logger.debug('Account Data: %s',acc_cfg.__dict__)
                         self._acc = lib.create_account(acc_cfg, set_default=True, cb=acc_cb)
 			sleep(3.0)
 
-                except pj.Error, err:
-                        print 'Error creating account:', err
+                except pj.Error, e:
+                        logger.error('Error creating account:', e)
 
 		logger.info('Connected')
 
@@ -83,8 +92,10 @@ class dispsip:
                         'User-Agent': user_agent,
                         'Content-Type': "application/json;charset=UTF-8"}
 
+		logger.info('Authenticating user')
                 response = requests.post(url, None, headers=headers)
 		params = json.loads(response.content)
+		logger.debug('Authentication server answer: %s',params)
 
 		self._validToken = str(params['access_token'])
 
@@ -99,8 +110,10 @@ class dispsip:
                         'User-Agent': user_agent,
                         'Content-Type': "application/json;charset=UTF-8"}
 
+		logger.info('Loging user')
                 response = requests.post(url, None, headers=headers)
 		params = json.loads(response.content)
+		logger.debug('Login server answer: %s',params)
 
                 self._sip_pass = str(params['user']['password'])
                 self._sip_name = str(params['user']['screen_name'])
@@ -110,26 +123,23 @@ class dispsip:
                 self._sip_proxy = str(params['config']['sip']['proxy'])
                 self._sip_pstnDomain = str(params['config']['sip']['pstn_domain'])
 
-	def send_sms(self, destination, content, content_type='text/plain;charset=utf-8'):
-                header = [('Comm-Notifications', 'delivered, displayed'),
-                        ('Comm-ID','1234567890'),
-                        ('Comm-Logging', 'on'),
-                        ('Comm-Type', 'text')]
-                uri = "sip:"+str(destination)+"@"+self._sip_pstnDomain
+	def send_sms(self, destination, content, content_type='text/plain'):
+                uri = str('sip:'+str(destination)+'@'+self._sip_pstnDomain)
+                to = str('sip:00'+str(destination)+'@'+self._sip_pstnDomain)
+
+		logger.info('Adding buddy [%s] to user [%s]',uri,self._user)
                 buddy = self._acc.add_buddy(uri, cb=BuddyCallback())
-                buddy.send_pager(content, content_type=content_type, hdr_list=header)
+		#buddy2 = self._acc.add_buddy(uri, request_uri=to, cb=BuddyCallback())
+
+		logger.info('Sending IM to buddy [%s] from user[%s]',uri,self._user)
+                buddy.send_pager(content, content_type=content_type)
+
 
         def call(self, destination):
-                header = [('Comm-Notifications', 'delivered, displayed'),
-                        #('Comm-ID',DEVICEID),
-                        #('Comm-ID','18916357-4f52-400f-99be-4c94cf0996bb'),
-                        ('Comm-Logging', 'on'),
-                        ('Content-Type', 'application/sdp'),
-                        ('Comm-Type', 'call')]
-
-                uri = "sip:"+str(destination)+"@"+self._sip_pstnDomain
-                #self._acc.make_call(uri, hdr_list=header, cb=MyCallCallback())
+                uri = 'sip:'+str(destination)+'@'+str(self._sip_pstnDomain)
+		logger.info('Making call to URI: %s',uri)
                 self._acc.make_call(uri, cb=MyCallCallback())
+
 
 
 
@@ -138,26 +148,28 @@ def log_cb(level, str, len):
     logger.debug(str.strip())
 
 class MyCallCallback(pj.CallCallback):
-    """ Callback to receive events from Call """
+    	""" Callback to receive events from Call """
 
-    def __init__(self, call=None):
-        pj.CallCallback.__init__(self, call)
+    	def __init__(self, call=None):
+        	pj.CallCallback.__init__(self, call)
 
-    def on_state(self):
-        """ Notification when call state has changed """
-        logger.info('on_state %s', self.call)
-        logger.info("Call is %s", self.call.info().state_text)
-        logger.info("last code %s", self.call.info().last_code)
-        logger.info("(%s)", self.call.info().last_reason)
+	def on_dtmf_digit(self, digits):
+		logger.info('DTMF Tones received: %s',digits)
 
-    def on_media_state(self):
-        """ Notification when call's media state has changed. """
-        logger.info('on_media_state %s', self.call)
-        if self.call.info().media_state == pj.MediaState.ACTIVE:
-            # Connect the call to sound device
-            call_slot = self.call.info().conf_slot
-            pj.Lib.instance().conf_connect(call_slot, 0)
-            pj.Lib.instance().conf_connect(0, call_slot)
+    	def on_state(self):
+        	""" Notification when call state has changed """
+		logger.info('Call status has changed. contact:%s, remote_uri:%s, remote_contact:%s, sip_call_id:%s, state_text:%s, last_code:%s, last_reason:%s, call_time:%s, total_time:%s', self.call.info().contact, self.call.info().remote_uri, self.call.info().remote_contact, self.call.info().sip_call_id, self.call.info().state_text, self.call.info().last_code, self.call.info().last_reason, self.call.info().call_time, self.call.info().total_time)
+
+
+    	def on_media_state(self):
+        	if self.call.info().media_state == pj.MediaState.ACTIVE:
+            		# Connect the call to sound device
+            		call_slot = self.call.info().conf_slot
+            		pj.Lib.instance().conf_connect(call_slot, 0)
+            		pj.Lib.instance().conf_connect(0, call_slot)
+            		logger.info('Media is now active')
+        	else:
+            		logger.info('Media is inactive')
 
 
 class AuthCred(object):
@@ -183,33 +195,40 @@ class BuddyCallback(pj.BuddyCallback):
 
 
 class MyAccountCallback(pj.AccountCallback):
-    def __init__(self, account=None):
-        pj.AccountCallback.__init__(self, account)
+    	def __init__(self, account=None):
+        	pj.AccountCallback.__init__(self, account)
 
-    def on_incoming_call(self, call):
-        my_cb = MyCallCallback()
-        call.set_callback(my_cb)
+    	def on_incoming_call(self, call):
+		logger.info('New call incoming, contact:%s, remote_uri:%s, sip_call_id:%s, state_text:%s, last_code:%s, last_reason:%s, call_time:%s, total_time:%s', call.info().contact, call.info().remote_uri, call.info().sip_call_id, call.info().state_text, call.info().last_code, call.info().last_reason, call.info().call_time, call.info().total_time)
+        	my_cb = MyCallCallback()
+        	call.set_callback(my_cb)
+		sleep(2)
+		logger.info('Answering call %s', call.info().sip_call_id)
+		call.answer()
+		sleep(1)
+		call.dial_dtmf('1234567890')
+		logger.info('sending tones')
 
-    #def on_incoming_call(self, call):
-        #call.hangup(501, "Sorry, not ready to accept calls yet")
 
-    def on_reg_state(self):
-        logger.info("Registration complete, status= %s ( %s )",
-                    self.account.info().reg_status,
-                    self.account.info().reg_reason)
+    	def on_reg_state(self):
+        	logger.info("Registration status has changed. status= %s ( %s )", self.account.info().reg_status, self.account.info().reg_reason)
+
+	def on_pager(self, from_uri, contact, mime_type, body):
+		logger.info('New IM received. from: %s, body: %s',from_uri,body)
 
 
 if __name__ == '__main__':
 	
+	#logging.basicConfig(level=logging.DEBUG)
 	logging.basicConfig(level=logging.INFO)
 
 	disp1 = dispsip()
 	sleep (1)
 	disp1.connect()
-	sleep(3)
 	disp1.send_sms('34699697868','HOLA')
+	disp1.send_sms('447730520578','HOLA')
 	sleep(3)
-	disp1.call(34699697868)
+	disp1.call('0034699697868')
 	sleep(5)
 	disp1.disconnect()
 

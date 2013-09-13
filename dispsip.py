@@ -127,10 +127,14 @@ class dispsip:
 	def send_sms(self, destination, content, content_type='text/plain'):
                 uri = str('sip:'+str(destination)+'@'+self._sip_pstnDomain)
                 to = str('sip:00'+str(destination)+'@'+self._sip_pstnDomain)
-
-		logger.info('Adding buddy [%s] to user [%s]',uri,self._user)
-                buddy = self._acc.add_buddy(uri, cb=BuddyCallback())
-		#buddy2 = self._acc.add_buddy(uri, request_uri=to, cb=BuddyCallback())
+		
+		try:
+			logger.info('Adding buddy [%s] to user [%s]',uri,self._user)
+                	buddy = self._acc.add_buddy(uri, cb=BuddyCallback())
+			#buddy2 = self._acc.add_buddy(uri, request_uri=to, cb=BuddyCallback())
+			buddy.subscribe()	
+		except pjsua.Error, err:
+			logger.error('Error adding buddy %s',uri)
 
 		logger.info('Sending IM to buddy [%s] from user[%s]',uri,self._user)
                 buddy.send_pager(content, content_type=content_type)
@@ -213,16 +217,19 @@ class AuthCred(object):
         self.passwd = passwd
 
 class BuddyCallback(pj.BuddyCallback):
-    def __init__(self, buddy=None):
-        pj.BuddyCallback.__init__(self, buddy)
+    	def __init__(self, buddy=None):
+        	pj.BuddyCallback.__init__(self, buddy)
+	
+	def on_state(self):
+		logger.info('Buddy state has changed: %s', self.buddy.info().sub_state)
 
-    def on_pager(self, mime_type, body):
-        logger.info('on_pager %s %s %s', self.buddy, mime_type, body)
-        #self.listener.on_message('MESSAGE', self.buddy.info().uri, mime_type, body, [])
+    	def on_pager(self, mime_type, body):
+        	logger.info('Incoming IM %s %s %s', self.buddy, mime_type, body)
+        	#self.listener.on_message('MESSAGE', self.buddy.info().uri, mime_type, body, [])
 
-    def on_pager_status(self, body, im_id, code, reason):
-        logger.info('on_pager_status %s %s %s', code, self.buddy, body)
-        self.buddy.delete()
+    	def on_pager_status(self, body, im_id, code, reason):
+        	logger.info('Delivery status of IM %s %s %s %s', self.buddy, im_id, code, reason)
+        	#self.buddy.delete()
 
 
 
@@ -257,13 +264,17 @@ if __name__ == '__main__':
 	disp1 = dispsip()
 	sleep (1)
 	disp1.connect()
-	disp1.send_sms('34699697868','HOLA')
-	disp1.send_sms('447730520578','HOLA')
-	disp1.get_profile()
-	disp1.get_history()
-	sleep(3)
-	disp1.call('0034699697868')
 	sleep(5)
+	disp1.send_sms('34699697868','HOLA')
+	sleep(5)
+	disp1.send_sms('0034699697868','HOLA')
+	sleep(5)
+	disp1.send_sms('447730520578','HOLA')
+	#disp1.get_profile()
+	#disp1.get_history()
+	sleep(5)
+	#disp1.call('0034699697868')
+	#sleep(5)
 	disp1.disconnect()
 
 	print "FIN"

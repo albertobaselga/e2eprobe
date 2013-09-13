@@ -1,6 +1,7 @@
 from base64 import b64encode
 import json
 import requests
+import urllib
 import ConfigParser
 import ast
 import pjsua as pj
@@ -140,6 +141,37 @@ class dispsip:
 		logger.info('Making call to URI: %s',uri)
                 self._acc.make_call(uri, cb=MyCallCallback())
 
+        def get_profile(self):
+                user_agent = config.get('SIP_CFG','user_agent')
+		url = config.get('SIP_CFG','url_profile')
+
+		logger.info('Getting Profile')
+                headers = {'Authorization': 'Bearer ' + self._validToken,
+                        'User-Agent': user_agent,
+                        'Content-Type': "application/json;charset=UTF-8"}
+
+                response = requests.get(url, headers=headers)
+		logger.info('Profile: %s',json.loads(response.content))
+                return json.loads(response.content)
+
+
+        def get_history(self, history_version=0):
+                user_agent = config.get('SIP_CFG','user_agent')
+                url = config.get('SIP_CFG','url_history')
+ 
+		logger.info('Getting history')
+                headers = {'Authorization': 'Bearer ' + self._validToken,
+                        'User-Agent': user_agent,
+                        'Content-Type': "application/json;charset=UTF-8"}
+
+                params = urllib.urlencode({'from_version': history_version,
+                        'page_size': 100,
+                        'page_number': 1})
+
+		url = url+params
+                response = requests.get(url, headers=headers)
+		logger.info('History: %s',json.loads(response.content))
+                return json.loads(response.content)
 
 
 
@@ -227,6 +259,8 @@ if __name__ == '__main__':
 	disp1.connect()
 	disp1.send_sms('34699697868','HOLA')
 	disp1.send_sms('447730520578','HOLA')
+	disp1.get_profile()
+	disp1.get_history()
 	sleep(3)
 	disp1.call('0034699697868')
 	sleep(5)

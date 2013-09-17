@@ -10,11 +10,14 @@ import sys, time, logging
 class dispgsm:
 
 
-	def __init__(self, msisdn, pin, port, baudrate):
-		self._msisdn = msisdn
-		self._pin = pin
-		self._port = port
-		self._baudrate = baudrate
+	def __init__(self, user_code='user1'):
+		self._config = ConfigParser.ConfigParser()
+                self._config.read('./config.cfg')
+
+		self._msisdn = ast.literal_eval(self._config.get('GSM_CREDENTIALS',user_code))['msisdn']
+                self._pin = ast.literal_eval(self._config.get('SIP_CREDENTIALS',user_code))['pin']
+		self._port = ast.literal_eval(self._config.get('SIP_CREDENTIALS',user_code))['port']
+		self._baudrate = ast.literal_eval(self._config.get('SIP_CREDENTIALS',user_code))['baudrate']
 		self._modem = GsmModem(self._port, self._baudrate, incomingCallCallbackFunc=handleIncomingCall, smsReceivedCallbackFunc=handleSms)
 		#self._modem.smsTextMode = False
 
@@ -35,7 +38,7 @@ class dispgsm:
 		self._modem.close()
 		print('Disconnected')
 
-	def sendSMS(self, destination, test, waitForDeliveryReport=False, deliveryTimeout=15):
+	def send_sms(self, destination, test, waitForDeliveryReport=False, deliveryTimeout=15):
 		print('Sending SMS...')
 		self._modem.sendSms(destination, text, waitForDeliveryReport, deliveryTimeout)
 		print('SMS sent')

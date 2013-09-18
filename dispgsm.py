@@ -6,81 +6,97 @@ from __future__ import print_function
 from gsmmodem.modem import GsmModem
 from gsmmodem.exceptions import InterruptedException
 import sys, time, logging
+import ConfigParser
+import ast
+
 
 class dispgsm:
 
+	_user=None
 
-	def __init__(self, user_code='user1'):
+	def __init__(self, user):
+
+		#print 'User:', user.user_code
+
+		dispgsm._user=user
+		self.logger = logging.getLogger('device.'+user.user_code+'.dispgsm')
+		self.logger.info('Initializing GSM device %s',user.user_code)
+
 		self._config = ConfigParser.ConfigParser()
                 self._config.read('./config.cfg')
 
-		self._msisdn = ast.literal_eval(self._config.get('GSM_CREDENTIALS',user_code))['msisdn']
-                self._pin = ast.literal_eval(self._config.get('SIP_CREDENTIALS',user_code))['pin']
-		self._port = ast.literal_eval(self._config.get('SIP_CREDENTIALS',user_code))['port']
-		self._baudrate = ast.literal_eval(self._config.get('SIP_CREDENTIALS',user_code))['baudrate']
-		self._modem = GsmModem(self._port, self._baudrate, incomingCallCallbackFunc=handleIncomingCall, smsReceivedCallbackFunc=handleSms)
+		self._msisdn = ast.literal_eval(self._config.get('GSM_CREDENTIALS',user.user_code))['msisdn']
+                self._pin = ast.literal_eval(self._config.get('GSM_CREDENTIALS',user.user_code))['pin']
+		self._port = ast.literal_eval(self._config.get('GSM_CREDENTIALS',user.user_code))['port']
+		self._baudrate = ast.literal_eval(self._config.get('GSM_CREDENTIALS',user.user_code))['baudrate']
+		self._modem = GsmModem(self._port, self._baudrate, incomingCallCallbackFunc=dispgsm.handleIncomingCall, smsReceivedCallbackFunc=dispgsm.handleSms)
 		#self._modem.smsTextMode = False
+		
 
 
 	def connect(self):
-		print('Initializing modem...')
+		self.logger.info('Connecting GSM modem...')
+		#self._modem.connect()
 		self._modem.connect(self._pin)
-		print('Waiting for network coverage...')
+		self.logger.info('Waiting for network coverage...')
 		self._modem.waitForNetworkCoverage(30)
-		print('Ready')
+		self.logger.info('GSM Device ready to use.')
 		#try:
 			# Specify a (huge) timeout so that it essentially blocks indefinitely, but still receives CTRL+C interrupt signal
 			#self._modem.rxThread.join(2**31) 
 		#finally:
 			#self._modem.close()
 	def disconnect(self):
-		print('Disconnecting modem...')
+		self.logger.info('Disconnecting modem...')
 		self._modem.close()
-		print('Disconnected')
+		self.logger.info('Disconnected')
 
-	def send_sms(self, destination, test, waitForDeliveryReport=False, deliveryTimeout=15):
-		print('Sending SMS...')
+	def send_sms(self, destination, text, waitForDeliveryReport=False, deliveryTimeout=15):
+		self.logger.info('Sending SMS with text:%s',text)
 		self._modem.sendSms(destination, text, waitForDeliveryReport, deliveryTimeout)
-		print('SMS sent')
+		self.logger.info('SMS sent')
 
-	def dial(self, destination):
+	def dial(self, destination, dtmf='1234567890'):
+		self.logger.info('Calling number %s',destination)
                 call = self._modem.dial(destination)
                 wasAnswered = False
                 while call.active:
                         if call.answered:
                                 wasAnswered = True
-                                print('Call has been answered; waiting a while...')
+                                self.logger.info('Call has been answered; waiting a while...')
                                 # Wait for a bit - some older modems struggle to send DTMF tone immediately after answering a call
                                 time.sleep(3.0)
-                                print('Playing DTMF tones...')
+                                self.logger.info('Playing DTMF tones: %s',dtmf)
                                 try:
                                         if call.active: # Call could have been ended by remote party while we waited in the time.sleep() call
-                                                call.sendDtmfTone('9515999955951')
+                                                call.sendDtmfTone(dtmf)
+						self.logger.info('DTMF tones sent')
+						time.sleep(10)
                                 except InterruptedException as e:
                                         # Call was ended during playback
-                                        print('DTMF playback interrupted: {0} ({1} Error {2})'.format(e, e.cause.type, e.cause.code))
+                                        self.logger.info('DTMF playback interrupted: {0} ({1} Error {2})'.format(e, e.cause.type, e.cause.code))
                                 except CommandError as e:
-                                        print('DTMF playback failed: {0}'.format(e))
+                                        self.logger.error('DTMF playback failed: {0}'.format(e))
                                 finally:
                                         if call.active: # Call is still active
-                                                print('Hanging up call...')
+                                                self.logger.info('Hanging up call...')
                                                 call.hangup()
                                         else: # Call is no longer active (remote party ended it)
-                                                print('Call has been ended by remote party')
+                                                self.logger.info('Call has been ended by remote party')
                         else:
                                 # Wait a bit and check again
                                  time.sleep(0.5)
                 if not wasAnswered:
-                        print('Call was not answered by remote party')
-                print('Done.')
-                self._modem.close()
+                        self.logger.info('Call was not answered by remote party')
+                self.logger.info('Call finished')
 
 
-def handleIncomingCall(call):
+	def handleIncomingCall(call):
+		logger = logging.getLogger('device.'+dispsip._user.user_code+'.dispgsm')
     		if call.ringCount == 1:
-        		print('Incoming call from:', call.number)
+        		logger.info('Incoming call from:', call.number)
     		elif call.ringCount >= 2:
-            		print('Answering call and playing some DTMF tones...')
+            		logger.info('Answering call and playing some DTMF tones...')
             		call.answer()
             		# Wait for a bit - some older modems struggle to send DTMF tone immediately after answering a call
             		time.sleep(20.0)
@@ -88,17 +104,18 @@ def handleIncomingCall(call):
                 		call.sendDtmfTone('9515999955951')
             		except InterruptedException as e:
                 		# Call was ended during playback
-                		print('DTMF playback interrupted: {0} ({1} Error {2})'.format(e, e.cause.type, e.cause.code))
+                		logger.info('DTMF playback interrupted: {0} ({1} Error {2})'.format(e, e.cause.type, e.cause.code))
             		finally:
                 		if call.answered:
-                    			print('Hanging up call.')
+                    			logger.info('Hanging up call.')
                     			call.hangup()
     		else:
-        		print(' Call from {0} is still ringing...'.format(call.number))
+        		logger.info(' Call from {0} is still ringing...'.format(call.number))
 
 
-def handleSms(sms):
-		print(u'== SMS message received ==\nFrom: {0}\nTime: {1}\nMessage:\n{2}\n'.format(sms.number, sms.time, sms.text))
+	def handleSms(sms):
+		logger = logging.getLogger('device.'+dispsip._user.user_code+'.dispgsm')
+		logger.info(u'== SMS message received ==\nFrom: {0}\nTime: {1}\nMessage:\n{2}\n'.format(sms.number, sms.time, sms.text))
 		#sms.reply(u'SMS received: "{0}{1}"'.format(sms.text[:20], '...' if len(sms.text) > 20 else ''))
 
 

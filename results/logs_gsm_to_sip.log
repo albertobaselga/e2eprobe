@@ -1,0 +1,69 @@
+2013-09-18 03:52:21,614 device INFO Starting test
+2013-09-18 03:52:21,614 device INFO Starting function user2
+2013-09-18 03:52:21,614 device INFO Starting function user1
+2013-09-18 03:52:21,614 device.user2 INFO Initializing device for user:user2
+2013-09-18 03:52:21,615 device.user1 INFO Initializing device for user:user1
+2013-09-18 03:52:21,615 device.user2.dispgsm INFO Initializing GSM device user2
+2013-09-18 03:52:21,616 device.user1.dispsip INFO Initializing SIP device for user: user1
+03:52:21.616 os_core_unix.c !pjlib 2.1 for POSIX initialized
+03:52:21.616 sip_endpoint.c  .Creating endpoint instance...
+03:52:21.617          pjlib  .select() I/O Queue created (0x90942a0)
+03:52:21.617 sip_endpoint.c  .Module "mod-msg-print" registered
+03:52:21.617 sip_transport.  .Transport manager created.
+03:52:21.617   pjsua_core.c  .PJSUA state changed: NULL --> CREATED
+2013-09-18 03:52:21,624 device.user1 INFO Connecting devices...
+2013-09-18 03:52:21,626 device.user1 INFO Connecting SIP device
+2013-09-18 03:52:21,626 device.user1.dispsip INFO Connecting SIP device.
+2013-09-18 03:52:21,627 device.user2 INFO Connecting devices...
+2013-09-18 03:52:21,628 device.user1.dispsip INFO Loging user
+2013-09-18 03:52:21,628 device.user2 INFO Connecting GSM device
+2013-09-18 03:52:21,630 device.user2.dispgsm INFO Connecting GSM modem...
+2013-09-18 03:52:21,637 urllib3.connectionpool INFO Starting new HTTPS connection (1): api.tugoapp.com
+2013-09-18 03:52:21,706 gsmmodem.modem.GsmModem INFO Loading Huawei call state update table
+2013-09-18 03:52:21,791 device.user2.dispgsm INFO Waiting for network coverage...
+2013-09-18 03:52:22,147 device.user1.dispsip INFO Authenticating user
+2013-09-18 03:52:22,148 urllib3.connectionpool INFO Starting new HTTPS connection (1): api.tugoapp.com
+2013-09-18 03:52:22,756 device.user1.dispsip INFO Registration status has changed. status= 200 ( OK )
+2013-09-18 03:52:22,800 device.user2.dispgsm INFO GSM Device ready to use.
+2013-09-18 03:52:25,406 device.user1.dispsip INFO Device successfully registered.
+2013-09-18 03:52:32,810 device.user2.dispgsm INFO Calling number 00447730520578
+2013-09-18 03:52:36,743 device.user1.dispsip INFO New call incoming, contact:"Alberto Baselga" <sip:447730520578@192.168.1.34:12940;transport=TLS;ob>, remote_uri:"34646857216" <sip:34646857216@o2uk.pstn.gconnect.jajah.com>, sip_call_id:d582d9ba-9aa7-1231-ebb2-005056857077, state_text:INCOMING, last_code:0, last_reason:, call_time:0, total_time:0
+2013-09-18 03:52:36,744 device.user1 INFO Call recived on user user1 through device: sip
+2013-09-18 03:52:38,746 device.user1.dispsip INFO Answering call d582d9ba-9aa7-1231-ebb2-005056857077
+2013-09-18 03:52:38,748 device.user1.dispsip INFO Media is now active
+2013-09-18 03:52:38,749 device.user1.dispsip INFO Call status has changed. contact:"Alberto Baselga" <sip:447730520578@192.168.1.34:12940;transport=TLS;ob>, remote_uri:"34646857216" <sip:34646857216@o2uk.pstn.gconnect.jajah.com>, remote_contact:<sip:2347202@91.220.9.49:443;transport=tls>, sip_call_id:d582d9ba-9aa7-1231-ebb2-005056857077, state_text:CONNECTING, last_code:200, last_reason:OK, call_time:0, total_time:2
+2013-09-18 03:52:39,750 device.user1.dispsip INFO sending tones
+2013-09-18 03:52:39,802 device.user1.dispsip INFO Call status has changed. contact:"Alberto Baselga" <sip:447730520578@192.168.1.34:12940;transport=TLS;ob>, remote_uri:"34646857216" <sip:34646857216@o2uk.pstn.gconnect.jajah.com>, remote_contact:<sip:2347202@91.220.9.49:443;transport=tls>, sip_call_id:d582d9ba-9aa7-1231-ebb2-005056857077, state_text:CONFIRMED, last_code:200, last_reason:OK, call_time:0, total_time:3
+2013-09-18 03:52:39,804 device.user1.dispsip INFO Media is now active
+2013-09-18 03:52:41,886 device.user2.dispgsm INFO Call has been answered; waiting a while...
+2013-09-18 03:52:44,890 device.user2.dispgsm INFO Playing DTMF tones: 1234567890
+2013-09-18 03:52:45,488 device.user1.dispsip INFO DTMF Tones received: 1
+2013-09-18 03:52:45,808 device.user1.dispsip INFO DTMF Tones received: 2
+2013-09-18 03:52:46,328 device.user1.dispsip INFO DTMF Tones received: 3
+2013-09-18 03:52:46,838 device.user1.dispsip INFO DTMF Tones received: 4
+2013-09-18 03:52:47,318 device.user1.dispsip INFO DTMF Tones received: 5
+2013-09-18 03:52:47,470 device.user2.dispgsm INFO DTMF tones sent
+2013-09-18 03:52:47,808 device.user1.dispsip INFO DTMF Tones received: 6
+2013-09-18 03:52:48,289 device.user1.dispsip INFO DTMF Tones received: 7
+2013-09-18 03:52:48,825 device.user1.dispsip INFO DTMF Tones received: 8
+2013-09-18 03:52:49,278 device.user1.dispsip INFO DTMF Tones received: 9
+2013-09-18 03:52:49,850 device.user1.dispsip INFO DTMF Tones received: 0
+2013-09-18 03:52:57,481 device.user2.dispgsm INFO Hanging up call...
+2013-09-18 03:52:57,749 device.user2.dispgsm INFO Call finished
+2013-09-18 03:52:58,419 device.user1.dispsip INFO Call status has changed. contact:"Alberto Baselga" <sip:447730520578@192.168.1.34:12940;transport=TLS;ob>, remote_uri:"34646857216" <sip:34646857216@o2uk.pstn.gconnect.jajah.com>, remote_contact:<sip:2347202@91.220.9.49:443;transport=tls>, sip_call_id:d582d9ba-9aa7-1231-ebb2-005056857077, state_text:DISCONNCTD, last_code:200, last_reason:Normal call clearing, call_time:18, total_time:21
+2013-09-18 03:52:58,419 device.user1.dispsip INFO This call [d582d9ba-9aa7-1231-ebb2-005056857077] has been disconnected
+2013-09-18 03:53:02,756 device.user2.dispgsm INFO Sending SMS with text:Test GSM to SIP
+2013-09-18 03:53:04,331 device.user2.dispgsm INFO SMS sent
+2013-09-18 03:53:05,173 device.user1.dispsip INFO New IM received. from: <sip:34646857216@o2uk.pstn.gconnect.jajah.com>, body: Test GSM to SIP
+2013-09-18 03:53:05,173 device.user1 INFO IM/SMS recived on user user1 through device: sip
+2013-09-18 03:53:24,352 device.user2 INFO Stoping devices
+2013-09-18 03:53:24,352 device.user2 INFO Stoping GSM device
+2013-09-18 03:53:24,352 device.user2.dispgsm INFO Disconnecting modem...
+2013-09-18 03:53:25,009 device.user2.dispgsm INFO Disconnected
+2013-09-18 03:53:25,467 device.user1 INFO Stoping devices
+2013-09-18 03:53:25,467 device.user1 INFO Stoping SIP device
+2013-09-18 03:53:25,467 device.user1.dispsip INFO Disconnecting
+2013-09-18 03:53:25,953 device.user1.dispsip INFO Registration status has changed. status= 200 ( OK )
+2013-09-18 03:53:26,888 device INFO Waiting tests to finish...
+2013-09-18 03:53:26,889 device INFO Test Complete. Results:
+

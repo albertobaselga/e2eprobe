@@ -9,19 +9,23 @@ import dispgsm
 
 class user:
 	def __init__(self, user_code,sip=True,gsm=True,gps=False):
-		self.logger = logging.getLogger('device.'+user_code)
+		self.logger = logging.getLogger(user_code)
 		#self._config = ConfigParser.ConfigParser()
                 #self._config.read('./config.cfg')
 		self.user_code=user_code
-		self.logger.info('Initializing device for user:%s',user_code)
+		self.logger.info('Initializing device for user:%s sip:%s gsm:%s',user_code,sip,gsm)
+		self.metrics={}
+		self.metrics[self.user_code]={}
 		if sip:
 			self._dispsip = dispsip.dispsip(self)
+			self.metrics[user_code]['sip']=[]
 		if gsm:
 			self._dispgsm = dispgsm.dispgsm(self)
+			self.metrics[user_code]['gsm']=[]
 		#self._dispgps = dispgps
 
 	def start(self,dispsip=True,dispgsm=True,dispgps=False):
-		self.logger.info('Connecting devices...')
+		self.logger.info('Connecting devices... sip:%s, gsm:%s',dispsip,dispgsm)
 		if dispsip:
 			self.logger.info('Connecting SIP device')
 			self._dispsip.connect()
@@ -49,11 +53,20 @@ class user:
 	def send_sip_sms(self, destination, content):
 		self._dispsip.send_sms(destination, content)
 
-	def gsm_dial(self, destination):
-		self._dispgsm.dial(destination)
+	def gsm_dial(self, destination, dtmf=None):
+		self._dispgsm.dial(destination, dtmf)
 
-	def send_gsm_sms(self, destination, content):
+	def send_gsm_sms(self, destination, content=None):
 		self._dispgsm.send_sms(destination, content)
+
+	def get_metrics(self,sip=True,gsm=True,gps=False):
+		if sip:
+			self.metrics[self.user_code]['sip'].append(self._dispsip.metrics)
+		if gsm:
+			self.metrics[self.user_code]['gsm'].append(self._dispgsm.metrics)
+	
+		self.logger.debug('Returning metrics %s',self.metrics)
+		return self.metrics
 
 	def user_sms_handler(self, device):
 		self.logger.info('IM/SMS recived on user %s through device: %s',self.user_code,device)

@@ -1,0 +1,295 @@
+[
+    {
+        "user2": {
+            "gsm": [
+                {
+                    "dial_call": [
+                        {
+                            "dial_dtmf": "9383930425", 
+                            "dial_hangup": "2013-09-25 21:11:11.193343", 
+                            "dial_end": "2013-09-25 21:11:11.459578", 
+                            "dial_start": "2013-09-25 21:10:50.088072", 
+                            "dial_answered": "2013-09-25 21:10:55.608924"
+                        }, 
+                        {
+                            "dial_dtmf": "6218069509", 
+                            "dial_hangup": "2013-09-25 21:11:56.131678", 
+                            "dial_end": "2013-09-25 21:11:56.396176", 
+                            "dial_start": "2013-09-25 21:11:34.524443", 
+                            "dial_answered": "2013-09-25 21:11:40.546816"
+                        }
+                    ], 
+                    "send_sms": [
+                        {
+                            "sms_status": "DELIVERED", 
+                            "sms_end": "2013-09-25 21:11:24.516243", 
+                            "sms_sent_time": "2013-09-25 21:11:21.470402", 
+                            "sms_delivery_timeout": 15, 
+                            "sms_text": "8674486334"
+                        }, 
+                        {
+                            "sms_status": "DELIVERED", 
+                            "sms_end": "2013-09-25 21:12:09.550158", 
+                            "sms_sent_time": "2013-09-25 21:12:06.406640", 
+                            "sms_delivery_timeout": 15, 
+                            "sms_text": "3508721045"
+                        }
+                    ], 
+                    "handled_call": [], 
+                    "handled_sms": []
+                }
+            ]
+        }, 
+        "user1": {
+            "sip": [
+                {
+                    "handled_call": [
+                        {
+                            "sip_call_id": "0b383e76-a0b9-1231-cda2-005056857a0a", 
+                            "call_start": "2013-09-25 21:10:54.016173", 
+                            "destination": "\"Alberto Baselga\" <sip:447730520578@10.95.197.192:20617;transport=TLS;ob>", 
+                            "status_changes": [
+                                {
+                                    "status": "CONNECTING", 
+                                    "total_time": 0, 
+                                    "last_reason": "OK", 
+                                    "call_time": 0, 
+                                    "date_change": "2013-09-25 21:10:54.017251", 
+                                    "last_code": 200
+                                }, 
+                                {
+                                    "status": "CONFIRMED", 
+                                    "total_time": 0, 
+                                    "last_reason": "OK", 
+                                    "call_time": 0, 
+                                    "date_change": "2013-09-25 21:10:54.170813", 
+                                    "last_code": 200
+                                }, 
+                                {
+                                    "status": "DISCONNCTD", 
+                                    "total_time": 17, 
+                                    "last_reason": "Normal call clearing", 
+                                    "call_time": 17, 
+                                    "date_change": "2013-09-25 21:11:11.920366", 
+                                    "last_code": 200
+                                }
+                            ], 
+                            "remote_contact": "<sip:2347202@91.220.9.49:443;transport=tls>", 
+                            "call_finished": "2013-09-25 21:11:11.920961", 
+                            "dtmf_received": "9383930425", 
+                            "remote_uri": "\"34646857216\" <sip:34646857216@o2uk.pstn.gconnect.jajah.com>"
+                        }, 
+                        {
+                            "sip_call_id": "25fbca2b-a0b9-1231-7cb1-005056857694", 
+                            "call_start": "2013-09-25 21:11:38.916438", 
+                            "destination": "\"Alberto Baselga\" <sip:447730520578@10.95.197.192:20617;transport=TLS;ob>", 
+                            "status_changes": [
+                                {
+                                    "status": "CONNECTING", 
+                                    "total_time": 0, 
+                                    "last_reason": "OK", 
+                                    "call_time": 0, 
+                                    "date_change": "2013-09-25 21:11:38.918125", 
+                                    "last_code": 200
+                                }, 
+                                {
+                                    "status": "CONFIRMED", 
+                                    "total_time": 0, 
+                                    "last_reason": "OK", 
+                                    "call_time": 0, 
+                                    "date_change": "2013-09-25 21:11:39.072505", 
+                                    "last_code": 200
+                                }, 
+                                {
+                                    "status": "DISCONNCTD", 
+                                    "total_time": 18, 
+                                    "last_reason": "Normal call clearing", 
+                                    "call_time": 17, 
+                                    "date_change": "2013-09-25 21:11:57.025331", 
+                                    "last_code": 200
+                                }
+                            ], 
+                            "remote_contact": "<sip:2347202@91.220.9.49:443;transport=tls>", 
+                            "call_finished": "2013-09-25 21:11:57.025914", 
+                            "dtmf_received": "6218069509", 
+                            "remote_uri": "\"34646857216\" <sip:34646857216@o2uk.pstn.gconnect.jajah.com>"
+                        }
+                    ], 
+                    "dial_call": [], 
+                    "send_sms": [], 
+                    "connect": {
+                        "login": {
+                            "login_start": "2013-09-25 21:10:38.931010", 
+                            "login_status_code": 200, 
+                            "login_finish": "2013-09-25 21:10:39.624188"
+                        }, 
+                        "authentication": {
+                            "auth_start": "2013-09-25 21:10:39.625000", 
+                            "auth_status_code": 200, 
+                            "auth_finish": "2013-09-25 21:10:39.875318"
+                        }
+                    }, 
+                    "handled_sms": [
+                        {
+                            "originator": "<sip:34646857216@o2uk.pstn.gconnect.jajah.com>", 
+                            "arrival_date": "2013-09-25 21:11:23.721414", 
+                            "sms_body": "8674486334"
+                        }, 
+                        {
+                            "originator": "<sip:34646857216@o2uk.pstn.gconnect.jajah.com>", 
+                            "arrival_date": "2013-09-25 21:12:08.728789", 
+                            "sms_body": "3508721045"
+                        }
+                    ]
+                }
+            ]
+        }
+    }, 
+    {
+        "user2": {
+            "gsm": [
+                {
+                    "dial_call": [
+                        {
+                            "dial_dtmf": "9383930425", 
+                            "dial_hangup": "2013-09-25 21:11:11.193343", 
+                            "dial_end": "2013-09-25 21:11:11.459578", 
+                            "dial_start": "2013-09-25 21:10:50.088072", 
+                            "dial_answered": "2013-09-25 21:10:55.608924"
+                        }, 
+                        {
+                            "dial_dtmf": "6218069509", 
+                            "dial_hangup": "2013-09-25 21:11:56.131678", 
+                            "dial_end": "2013-09-25 21:11:56.396176", 
+                            "dial_start": "2013-09-25 21:11:34.524443", 
+                            "dial_answered": "2013-09-25 21:11:40.546816"
+                        }
+                    ], 
+                    "send_sms": [
+                        {
+                            "sms_status": "DELIVERED", 
+                            "sms_end": "2013-09-25 21:11:24.516243", 
+                            "sms_sent_time": "2013-09-25 21:11:21.470402", 
+                            "sms_delivery_timeout": 15, 
+                            "sms_text": "8674486334"
+                        }, 
+                        {
+                            "sms_status": "DELIVERED", 
+                            "sms_end": "2013-09-25 21:12:09.550158", 
+                            "sms_sent_time": "2013-09-25 21:12:06.406640", 
+                            "sms_delivery_timeout": 15, 
+                            "sms_text": "3508721045"
+                        }
+                    ], 
+                    "handled_call": [], 
+                    "handled_sms": []
+                }
+            ]
+        }, 
+        "user1": {
+            "sip": [
+                {
+                    "handled_call": [
+                        {
+                            "sip_call_id": "0b383e76-a0b9-1231-cda2-005056857a0a", 
+                            "call_start": "2013-09-25 21:10:54.016173", 
+                            "destination": "\"Alberto Baselga\" <sip:447730520578@10.95.197.192:20617;transport=TLS;ob>", 
+                            "status_changes": [
+                                {
+                                    "status": "CONNECTING", 
+                                    "total_time": 0, 
+                                    "last_reason": "OK", 
+                                    "call_time": 0, 
+                                    "date_change": "2013-09-25 21:10:54.017251", 
+                                    "last_code": 200
+                                }, 
+                                {
+                                    "status": "CONFIRMED", 
+                                    "total_time": 0, 
+                                    "last_reason": "OK", 
+                                    "call_time": 0, 
+                                    "date_change": "2013-09-25 21:10:54.170813", 
+                                    "last_code": 200
+                                }, 
+                                {
+                                    "status": "DISCONNCTD", 
+                                    "total_time": 17, 
+                                    "last_reason": "Normal call clearing", 
+                                    "call_time": 17, 
+                                    "date_change": "2013-09-25 21:11:11.920366", 
+                                    "last_code": 200
+                                }
+                            ], 
+                            "remote_contact": "<sip:2347202@91.220.9.49:443;transport=tls>", 
+                            "call_finished": "2013-09-25 21:11:11.920961", 
+                            "dtmf_received": "9383930425", 
+                            "remote_uri": "\"34646857216\" <sip:34646857216@o2uk.pstn.gconnect.jajah.com>"
+                        }, 
+                        {
+                            "sip_call_id": "25fbca2b-a0b9-1231-7cb1-005056857694", 
+                            "call_start": "2013-09-25 21:11:38.916438", 
+                            "destination": "\"Alberto Baselga\" <sip:447730520578@10.95.197.192:20617;transport=TLS;ob>", 
+                            "status_changes": [
+                                {
+                                    "status": "CONNECTING", 
+                                    "total_time": 0, 
+                                    "last_reason": "OK", 
+                                    "call_time": 0, 
+                                    "date_change": "2013-09-25 21:11:38.918125", 
+                                    "last_code": 200
+                                }, 
+                                {
+                                    "status": "CONFIRMED", 
+                                    "total_time": 0, 
+                                    "last_reason": "OK", 
+                                    "call_time": 0, 
+                                    "date_change": "2013-09-25 21:11:39.072505", 
+                                    "last_code": 200
+                                }, 
+                                {
+                                    "status": "DISCONNCTD", 
+                                    "total_time": 18, 
+                                    "last_reason": "Normal call clearing", 
+                                    "call_time": 17, 
+                                    "date_change": "2013-09-25 21:11:57.025331", 
+                                    "last_code": 200
+                                }
+                            ], 
+                            "remote_contact": "<sip:2347202@91.220.9.49:443;transport=tls>", 
+                            "call_finished": "2013-09-25 21:11:57.025914", 
+                            "dtmf_received": "6218069509", 
+                            "remote_uri": "\"34646857216\" <sip:34646857216@o2uk.pstn.gconnect.jajah.com>"
+                        }
+                    ], 
+                    "dial_call": [], 
+                    "send_sms": [], 
+                    "connect": {
+                        "login": {
+                            "login_start": "2013-09-25 21:10:38.931010", 
+                            "login_status_code": 200, 
+                            "login_finish": "2013-09-25 21:10:39.624188"
+                        }, 
+                        "authentication": {
+                            "auth_start": "2013-09-25 21:10:39.625000", 
+                            "auth_status_code": 200, 
+                            "auth_finish": "2013-09-25 21:10:39.875318"
+                        }
+                    }, 
+                    "handled_sms": [
+                        {
+                            "originator": "<sip:34646857216@o2uk.pstn.gconnect.jajah.com>", 
+                            "arrival_date": "2013-09-25 21:11:23.721414", 
+                            "sms_body": "8674486334"
+                        }, 
+                        {
+                            "originator": "<sip:34646857216@o2uk.pstn.gconnect.jajah.com>", 
+                            "arrival_date": "2013-09-25 21:12:08.728789", 
+                            "sms_body": "3508721045"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+]
+
